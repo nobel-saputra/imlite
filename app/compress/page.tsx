@@ -45,6 +45,7 @@ function getFormatFromMime(mime: string): string {
 export default function CompressPage() {
   const router = useRouter();
   const [quality, setQuality] = useState(80);
+  const [debouncedQuality, setDebouncedQuality] = useState(80);
   const [outputFormat, setOutputFormat] = useState<"jpg" | "png" | "webp">("webp");
   const [sliderPos, setSliderPos] = useState(50);
   const comparisonRef = useRef<HTMLDivElement>(null);
@@ -149,12 +150,20 @@ export default function CompressPage() {
     });
   }, []);
 
+  // Debounce quality updates
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuality(quality);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [quality]);
+
   // Run compression when image loads or settings change
   useEffect(() => {
     if (isLoaded) {
-      compressImage(quality, outputFormat);
+      compressImage(debouncedQuality, outputFormat);
     }
-  }, [isLoaded, quality, outputFormat, compressImage]);
+  }, [isLoaded, debouncedQuality, outputFormat, compressImage]);
 
   // Cleanup blob URLs on unmount
   useEffect(() => {
@@ -379,6 +388,30 @@ export default function CompressPage() {
               <span>SMALLEST</span>
               <span>BEST QUALITY</span>
             </div>
+
+            {outputFormat === "png" && (
+              <div
+                style={{
+                  marginTop: "12px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  background: "rgba(168, 85, 247, 0.1)",
+                  border: "1px solid rgba(168, 85, 247, 0.2)",
+                  fontSize: "0.8rem",
+                  color: "#cbd5e1",
+                  display: "flex",
+                  gap: "8px",
+                }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple-light)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: "2px" }}>
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span>
+                  PNG is <strong>lossless</strong>. The quality slider won&apos;t affect size. Use <strong>WebP</strong> for better compression.
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Output Format */}
