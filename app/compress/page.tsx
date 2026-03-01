@@ -46,6 +46,8 @@ export default function CompressPage() {
   const router = useRouter();
   const [quality, setQuality] = useState(80);
   const [debouncedQuality, setDebouncedQuality] = useState(80);
+  const [scale, setScale] = useState(100);
+  const [debouncedScale, setDebouncedScale] = useState(100);
   const [outputFormat, setOutputFormat] = useState<"jpg" | "png" | "webp">("webp");
   const [sliderPos, setSliderPos] = useState(50);
   const comparisonRef = useRef<HTMLDivElement>(null);
@@ -98,7 +100,7 @@ export default function CompressPage() {
   }, [router]);
 
   // Compress function
-  const compressImage = useCallback((q: number, fmt: "jpg" | "png" | "webp") => {
+  const compressImage = useCallback((q: number, fmt: "jpg" | "png" | "webp", s: number) => {
     const img = originalImageRef.current;
     if (!img) return;
 
@@ -112,8 +114,11 @@ export default function CompressPage() {
         return;
       }
 
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      const targetWidth = Math.round(img.naturalWidth * (s / 100));
+      const targetHeight = Math.round(img.naturalHeight * (s / 100));
+
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
 
       const ctx = canvas.getContext("2d");
       if (!ctx) {
@@ -122,7 +127,7 @@ export default function CompressPage() {
       }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
       const mimeType = getMimeType(fmt);
       const qualityValue = fmt === "png" ? undefined : q / 100;
@@ -158,12 +163,20 @@ export default function CompressPage() {
     return () => clearTimeout(timer);
   }, [quality]);
 
+  // Debounce scale updates
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedScale(scale);
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [scale]);
+
   // Run compression when image loads or settings change
   useEffect(() => {
     if (isLoaded) {
-      compressImage(debouncedQuality, outputFormat);
+      compressImage(debouncedQuality, outputFormat, debouncedScale);
     }
-  }, [isLoaded, debouncedQuality, outputFormat, compressImage]);
+  }, [isLoaded, debouncedQuality, outputFormat, debouncedScale, compressImage]);
 
   // Cleanup blob URLs on unmount
   useEffect(() => {
@@ -225,6 +238,7 @@ export default function CompressPage() {
   // Reset handler
   const handleReset = () => {
     setQuality(80);
+    setScale(100);
     setOutputFormat("webp");
   };
 
@@ -350,7 +364,7 @@ export default function CompressPage() {
               <div className="file-info-text">
                 <span className="file-name">{imageData.name}</span>
                 <span className="file-meta">
-                  {imgWidth} × {imgHeight} px • RGB
+                  {Math.round(imgWidth * (debouncedScale / 100))} × {Math.round(imgHeight * (debouncedScale / 100))} px • RGB
                 </span>
               </div>
             </div>
@@ -388,6 +402,29 @@ export default function CompressPage() {
               <span>SMALLEST</span>
               <span>BEST QUALITY</span>
             </div>
+          </div>
+
+          {/* Scale Slider */}
+          <div className="setting-group">
+            <div className="setting-label-row">
+              <span className="setting-label">Image Dimensions</span>
+              <span className="quality-value">{scale}%</span>
+            </div>
+            <input
+              type="range"
+              min={10}
+              max={100}
+              value={scale}
+              onChange={(e) => setScale(Number(e.target.value))}
+              className="quality-slider"
+              style={{
+                background: `linear-gradient(to right, var(--purple) 0%, var(--purple) ${((scale - 10) / 90) * 100}%, #2a2a2a ${((scale - 10) / 90) * 100}%, #2a2a2a 100%)`,
+              }}
+            />
+            <div className="quality-labels">
+              <span>{Math.round(imgWidth * (scale / 100))}px</span>
+              <span>{imgWidth}px</span>
+            </div>
 
             {outputFormat === "png" && (
               <div
@@ -408,7 +445,7 @@ export default function CompressPage() {
                   <line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
                 <span>
-                  PNG is <strong>lossless</strong>. The quality slider won&apos;t affect size. Use <strong>WebP</strong> for better compression.
+                  PNG is <strong>lossless</strong>. To reduce file size, try adjusting the <strong>Image Dimensions</strong>.
                 </span>
               </div>
             )}
