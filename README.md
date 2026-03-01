@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# Imlite - Compress Image
 
-First, run the development server:
+**A fast, client-side image compression web app. No upload to server. No privacy risk. Just compress and go.**
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)]() [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg) ![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://imlite.vercel.app)
+
+🔗 **[Live Demo](https://imlite.vercel.app)** · [Portfolio](https://nobelsaputra.vercel.app)
+
+</div>
+
+---
+
+## Preview
+
+![Screenshot Aplikasi](./public/image-1.png)
+
+![Screenshot Aplikasi](./public/image-2.png)
+
+---
+
+## About This Project
+
+just simple compress image without delete the QUALITY
+
+---
+
+## Features
+
+- **Drag & Drop** — Upload images as easily as drag and drop
+- **Client-side Processing** — No files are ever sent to the server
+- **Quality Control** — Adjust compression levels to suit your needs
+- **Batch Compress** — Kompres banyak gambar sekaligus
+- **Before/After Preview** — Compare size and quality before downloading
+- **Format Support** — JPG, PNG, WebP
+- **Responsive** — Fully optimized for both desktop and mobile
+
+---
+
+## Tech Stack
+
+- **Next Js**
+- **Tailwindcss**
+
+---
+
+## Run Locally
 
 ```bash
+# Clone repo
+git clone https://github.com/nobel-saputra/imlite.git
+cd imlite
+
+# Install dependencies
+npm install
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Follow the provided server instructions to complete the setup. :)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+imlite/
+├── app/
+│   ├── compress/         # Compression page logic
+│   ├── css/              # Global styles
+│   ├── layout/           # Shared components (Navbar, Footer)
+│   ├── lib/              # Utility functions and libraries
+│   ├── layout.tsx        # Main layout
+│   └── page.tsx          # Landing page
+├── public/               # Static assets (images, icons)
+├── package.json          # Project configuration
+└── tsconfig.json         # TypeScript configuration
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+MIT License — email me if you want use this project nobelsaputra10@gmail.com
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<div align="center"> Built by <a href="https://github.com/nobel-saputra">nobelsaputra</a>  </div>
